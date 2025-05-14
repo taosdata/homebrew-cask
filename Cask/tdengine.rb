@@ -26,19 +26,19 @@ cask "tdengine" do
   postflight do
     puts <<~EOS
 
-      TDengine is installed successfully. Please open an Mac terminal and execute the commands below:
+      TDengine is installed successfully. Please open an terminal window and execute the commands below:
 
-      To configure TDengine, sudo vi /etc/taos/taos.cfg
-      To configure taosadapter, sudo vi /etc/taos/taoadapter.toml
-      To configure taos-explorer, sudo vi /etc/taos/explorer.toml
-      To start service, sudo launchctl start com.tdengine.taosd
-      To start Taos Adapter, sudo launchctl start com.tdengine.taosadapter
-      To start Taos Explorer, sudo launchctl start com.tdengine.taos-explorer
+      To configure TDengine: sudo vi /etc/taos/taos.cfg
+      To configure taosadapter: sudo vi /etc/taos/taoadapter.toml
+      To configure taos-explorer: sudo vi /etc/taos/explorer.toml
 
-      To start all the components, sudo start-all.sh
-      To access TDengine Commnd Line Interface, taos -h YourServerName
-      To access TDengine Graphic User Interface, http://YourServerName:6060
-      To read the user manual, http://YourServerName:6060/docs-en
+      To start TDengine service: sudo launchctl start com.tdengine.taosd
+      To start taosAdapter service: sudo launchctl start com.tdengine.taosadapter
+      To start taosExplorer service: sudo launchctl start com.tdengine.taos-explorer
+      To start all services: sudo start-all.sh
+
+      To access TDengine Commnd Line Interface: taos -h <ip>
+      To access TDengine Web Admin Console: http://<ip>:6060
     EOS
   end
 end
