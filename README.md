@@ -1,4 +1,5 @@
-# homebrew-cask
+# Homebrew Cask for TDengine
+
 Homebrew Cask for installing TDengine on macOS.
 
 ## Supported Platforms
