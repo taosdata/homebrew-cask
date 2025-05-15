@@ -30,7 +30,7 @@ jobs:
 
       - name: Get Latest TDengine Release
         run: |
-          LATEST_VERSION=$(curl -s "https://api.github.com/repos/taosdata/TDengine/releases/latest" | jq -r .tag_name | sed 's/^v//')
+          LATEST_VERSION=$(curl -s "https://api.github.com/repos/taosdata/TDengine/releases/latest" | jq -r .name | sed 's/^v//')
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
       - name: Update Cask File
