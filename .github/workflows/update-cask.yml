@@ -1,0 +1,67 @@
+name: Update TDengine Cask on New Release
+
+on:
+  schedule:
+    - cron: '0 12 1 * *'  # 每天 UTC 时间 12:00 检查一次
+  push:
+    branches:
+      - 'new_Cask'
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && github.event.pusher.name != 'GitHub Actions'"
+  workflow_dispatch:        # 在 GitHub UI 手动触发
+
+jobs:
+  update-cask:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # Homebrew 兼容的 Ruby 版本
+
+      - name: Install Homebrew
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "$HOME/.linuxbrew/bin" >> $GITHUB_PATH
+
+      - name: Get Latest TDengine Release
+        run: |
+          LATEST_VERSION=$(curl -s "https://api.github.com/repos/taosdata/TDengine/releases/latest" | jq -r .tag_name | sed 's/^v//')
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update Cask File
+        run: |
+          CURRENT_VERSION=$(grep 'version "' Casks/tdengine.rb | cut -d'"' -f2)
+          LATEST_VERSION="${{ steps.get-release.outputs.latest_version }}"
+
+          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+            # 下载文件并计算 SHA256
+            PKG_URL_x64="https://www.taosdata.com/assets-download/3.0/TDengine-server-${LATEST_VERSION}-macOS-x64.pkg"
+            TEMP_PKG=$(mktemp)
+            curl -L -o "$TEMP_PKG" "$PKG_URL"
+            NEW_SHA256_x64=$(shasum -a 256 "$TEMP_PKG" | cut -d' ' -f1)
+            PKG_URL_arm64="https://www.taosdata.com/assets-download/3.0/TDengine-server-${LATEST_VERSION}-macOS-arm64.pkg"
+            TEMP_PKG=$(mktemp)
+            curl -L -o "$TEMP_PKG" "$PKG_URL"
+            NEW_SHA256_arm64=$(shasum -a 256 "$TEMP_PKG" | cut -d' ' -f1)
+
+            # 更新 rb 文件
+            sed -i.bak \
+              -e "s/version \".*\"/version \"$LATEST_VERSION\"/" \
+              -e "s/sha256 intel: \".*\"/sha256 intel: \"$NEW_SHA256_x64\"/" \
+              -e "s/arm:   \".*\"/arm:   \"$NEW_SHA256_arm64\"/" \
+              Casks/tdengine.rb
+
+            # 提交更改
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add Casks/tdengine.rb
+            git commit -m "Update TDengine Cask to $LATEST_VERSION [skip ci]"
+            git push
+          else
+            echo "No new version detected. Current: $CURRENT_VERSION"
+          fi
