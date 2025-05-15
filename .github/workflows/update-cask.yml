@@ -38,12 +38,12 @@ jobs:
             # 下载文件并计算 SHA256
             PKG_URL_x64="https://www.taosdata.com/assets-download/3.0/TDengine-server-${LATEST_VERSION}-macOS-x64.pkg"
             TEMP_PKG_x64=$(mktemp)
-            curl -L -o "$TEMP_PKG" "$PKG_URL_x64"
+            curl -L -o "$TEMP_PKG_x64" "$PKG_URL_x64"
             NEW_SHA256_x64=$(shasum -a 256 "$TEMP_PKG_x64" | cut -d' ' -f1)
             PKG_URL_arm64="https://www.taosdata.com/assets-download/3.0/TDengine-server-${LATEST_VERSION}-macOS-arm64.pkg"
             TEMP_PKG_arm64=$(mktemp)
-            curl -L -o "$TEMP_PKG" "$PKG_URL_arm64"
-            NEW_SHA256_arm64=$(shasum -a 256 "$TEMP_PK_arm64G" | cut -d' ' -f1)
+            curl -L -o "$TEMP_PKG_arm64" "$PKG_URL_arm64"
+            NEW_SHA256_arm64=$(shasum -a 256 "$TEMP_PKG_arm64" | cut -d' ' -f1)
 
             # 更新 rb 文件
             sed -i.bak \
