@@ -1,7 +1,7 @@
 cask "tdengine" do
-  version "3.3.6.3"
-  sha256 intel: "58a52b25cb5436c330f0f26509b155109cc77b3a77c511ce45ca5b8e381474cf",  # Intel
-         arm:   "8f8496708cc24aa680a12b188162fea7a11e992c3d13a698f0bb0f6fd1673812"  # ARM
+  version "3.3.6.6"
+  sha256 intel: "a4cf69c06969c5a008ee8f17e91140184e4fd4bf10c9c8ec32807510f8b6a068",  # Intel
+         arm:   "f9d8bc937bec2c9e076d82384f21ee0ac97ace90327fc13c3e622dab496678d1"  # ARM
 
   url "https://www.taosdata.com/assets-download/3.0/TDengine-server-#{version}-macOS-#{Hardware::CPU.intel? ? "x64" : "arm64"}.pkg"
   name "TDengine"
