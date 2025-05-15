@@ -23,12 +23,8 @@ jobs:
         with:
           ruby-version: '3.1'  # Homebrew 兼容的 Ruby 版本
 
-      - name: Install Homebrew
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          echo "$HOME/.linuxbrew/bin" >> $GITHUB_PATH
-
       - name: Get Latest TDengine Release
+        id: get-release
         run: |
           LATEST_VERSION=$(curl -s "https://api.github.com/repos/taosdata/TDengine/releases/latest" | jq -r .name | sed 's/^v//')
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
